@@ -16,8 +16,13 @@ int money = 0;
 int hunger = 0;
 int thirst = 0;
 int happy = 0;
+int hash_flag = 0;
 char rcvd_chr = 0;
 simulation_state state = IDLE;
+unsigned char alert_from_hard[9];
+unsigned char answer_from_hash[17];
+int hash_sent = 0;
+
 
 /**********************************************************************
  * ----------------------- GLOBAL FUNCTIONS ---------------------------
@@ -48,10 +53,18 @@ void startTransmission()
 
 void check_data()
 {
-    int i = 0;
     TXSTA1bits.TXEN = 0; //disable transmission.
     if(recieve_buffer[recieve_place_to_read++%32] == '{') { //start of data
         char command = recieve_buffer[recieve_place_to_read++%32];
+        if(command == 'A') {
+            int i = 0;
+            for(i = 0 ; i< 8 ; i++){
+                alert_from_hard[i] = recieve_buffer[recieve_place_to_read++%32];
+            }
+            alert_from_hard[8] = '\0';
+            hash_flag = 1;
+            SetEvent(HASHTASK_ID, HASH_EVENT);
+        }
         if(command == 'G') { //start command given
             unsigned char upperMoney;
             unsigned char lowerMoney;
@@ -70,21 +83,46 @@ void check_data()
             }
             SetEvent(STATUSCHECK_ID, START_EVENT);
         }
+        if(command == 'M'){
+            unsigned char upperMoney;
+            unsigned char lowerMoney;
+            int earned_money;
+            recieve_place_to_read++;
+            upperMoney = recieve_buffer[recieve_place_to_read++%32];
+            lowerMoney = recieve_buffer[recieve_place_to_read++%32];
+            recieve_place_to_read++; //pass the "}"
+            earned_money = upperMoney;
+            earned_money = earned_money << 8;
+            earned_money |= lowerMoney;
+            money += earned_money;
+        }
         if(command == 'S') { //status data came
             hunger = recieve_buffer[recieve_place_to_read++%32];
             happy = recieve_buffer[recieve_place_to_read++%32];
             thirst = recieve_buffer[recieve_place_to_read++%32];
             if(hunger <= 40) {
+                //TXSTA1bits.TXEN = 0;
+                if(money >= 80){
                 SetEvent(FEEDTASK_ID, FEED_EVENT);
-                money -= 80;
+                //money -= 80;
+                }
+                //TXSTA1bits.TXEN = 1;
             }
             if(thirst <= 70) {
+                //TXSTA1bits.TXEN = 0;
+                if(money >= 30){
                 SetEvent(WATERTASK_ID, WATER_EVENT);
-                money -= 30;
+                //money -= 30;
+                }
+                //TXSTA1bits.TXEN = 1;
             }
             if(happy <= 20) {
+                //TXSTA1bits.TXEN = 0;
+                if(money >= 150){
                 SetEvent(PLAYTASK_ID, PLAY_EVENT);
-                money -= 150;
+                //money -= 150;
+                }
+                //TXSTA1bits.TXEN = 1;
             }
         }
     }
@@ -106,6 +144,11 @@ void sendChar(){
     if(send_place_to_read != send_place_to_write){
         TXREG1 = send_buffer[send_place_to_read++%32];
     }
+    
+    /*if(hello_chr == 'x'){
+        TXREG1 = hello_chr;
+    }*/
+    //
     //TXSTA1bits.TXEN = 0;
 
     //transmitData();

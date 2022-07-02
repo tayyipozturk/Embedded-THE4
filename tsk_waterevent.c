@@ -3,6 +3,7 @@
 /**********************************************************************
  * ----------------------- GLOBAL VARIABLES ---------------------------
  **********************************************************************/
+extern int money;
 extern char send_buffer[32];
 extern int send_place_to_write;
 char water_string[] = "{W}";
@@ -21,6 +22,7 @@ TASK(WATERTASK)
         ClearEvent(WATER_EVENT);
         WaitEvent(WATER_EVENT); //WATER EVENT FIRED
         ClearEvent(WATER_EVENT);
+        money-=30;
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = water_string[i];
         }

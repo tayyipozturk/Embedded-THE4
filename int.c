@@ -12,6 +12,7 @@
 /**********************************************************************
  * General interrupt vector. Do not modify.
  **********************************************************************/
+void sendChar();
 #pragma code IT_vector_low=0x18
 void Interrupt_low_vec(void)
 {

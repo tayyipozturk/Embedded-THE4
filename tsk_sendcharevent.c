@@ -3,10 +3,13 @@
 /**********************************************************************
  * ----------------------- GLOBAL VARIABLES ---------------------------
  **********************************************************************/
-extern char send_buffer[32];
+extern char recieve_buffer[32];
+extern char send_buffer[32] ;
+extern int recieve_place_to_write ;
+extern int recieve_place_to_read ;
 extern int send_place_to_write;
 extern int send_place_to_read;
-extern void configure_interrupt(void);
+extern char rcvd_chr;
 /**********************************************************************
  * ----------------------- LOCAL FUNCTIONS ----------------------------
  **********************************************************************/
@@ -18,7 +21,6 @@ TASK(SENDTASK)
     while(1) {
         WaitEvent(SEND_EVENT);
         ClearEvent(SEND_EVENT);
-        TXSTA1bits.TXEN = 1; //enable transmission.
         if(send_place_to_read != send_place_to_write) {
             TXREG1 = send_buffer[send_place_to_read++%32];
         }
