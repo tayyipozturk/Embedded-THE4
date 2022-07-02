@@ -14,7 +14,6 @@ extern void configure_interrupt(void);
 
 TASK(SENDTASK) 
 {
-    
     PIE1bits.RC1IE = 1;	// enable USART receive interrupt
     while(1) {
         WaitEvent(SEND_EVENT);

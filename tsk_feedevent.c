@@ -19,8 +19,8 @@ TASK(FEEDTASK)
 	while(1) {
         WaitEvent(FEED_EVENT); //FEED EVENT FIRED
         ClearEvent(FEED_EVENT);
-        //WaitEvent(FEED_EVENT); //FEED EVENT FIRED
-        //ClearEvent(FEED_EVENT);
+        WaitEvent(FEED_EVENT); //FEED EVENT FIRED
+        ClearEvent(FEED_EVENT);
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = feed_string[i];
         }

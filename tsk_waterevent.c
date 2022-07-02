@@ -19,8 +19,8 @@ TASK(WATERTASK)
 	while(1) {
         WaitEvent(WATER_EVENT); //WATER EVENT FIRED
         ClearEvent(WATER_EVENT);
-        //WaitEvent(WATER_EVENT); //WATER EVENT FIRED
-        //ClearEvent(WATER_EVENT);
+        WaitEvent(WATER_EVENT); //WATER EVENT FIRED
+        ClearEvent(WATER_EVENT);
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = water_string[i];
         }

@@ -24,6 +24,7 @@ TASK(STATUSCHECK)
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = status_check_string[i];
         }
+        TXSTAbits.TXEN = 1;
     }
 	TerminateTask();
 }

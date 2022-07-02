@@ -46,8 +46,8 @@
 #define SENDTASK_PRIO       3 
 #define RECEIVETASK_PRIO    2
 
-#define STATUSALARM          1
-#define SENDALARM            2   
+#define STATUSALARM          0
+#define SENDALARM            1   
 
 
 

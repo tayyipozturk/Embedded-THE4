@@ -22,6 +22,24 @@ simulation_state state = IDLE;
 /**********************************************************************
  * ----------------------- GLOBAL FUNCTIONS ---------------------------
  **********************************************************************/
+void transmitCharAndHello(char chr){
+    hello_chr = chr;
+    TXSTAbits.TXEN = 1;
+}
+
+void transmitData(){
+    if(hello_ind <=4){
+        TXREG1 = hello[hello_ind++];
+    }
+    else if(hello_ind == 5){
+        TXREG1 = hello_chr;
+        hello_ind++;
+    }
+    else{
+        hello_ind = 0;
+        TXSTA1bits.TXEN = 0;
+    }
+}
 
 void startTransmission()
 {
@@ -56,11 +74,11 @@ void check_data()
             hunger = recieve_buffer[recieve_place_to_read++%32];
             happy = recieve_buffer[recieve_place_to_read++%32];
             thirst = recieve_buffer[recieve_place_to_read++%32];
-            if(hunger <= 30) {
+            if(hunger <= 40) {
                 SetEvent(FEEDTASK_ID, FEED_EVENT);
                 money -= 80;
             }
-            if(thirst <= 50) {
+            if(thirst <= 70) {
                 SetEvent(WATERTASK_ID, WATER_EVENT);
                 money -= 30;
             }
@@ -82,13 +100,15 @@ void dataReceived()
         check_data();
     }
     rcvd_chr = 0;
-    //RCREG1 = 0;
 }
 
 void sendChar(){
     if(send_place_to_read != send_place_to_write){
         TXREG1 = send_buffer[send_place_to_read++%32];
     }
+    //TXSTA1bits.TXEN = 0;
+
+    //transmitData();
 }
 
 void configure_interrupt(){
