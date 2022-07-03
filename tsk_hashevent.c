@@ -76,7 +76,7 @@ TASK(HASHTASK)
         hash_flag = 0;
         while(send_place_to_write != send_place_to_read);
         j = 0;
-        ChainTask(STATUSCHECK_ID);
+        //ChainTask(STATUSCHECK_ID);
     }
 	TerminateTask();
 }

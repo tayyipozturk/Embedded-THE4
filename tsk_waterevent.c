@@ -6,6 +6,7 @@
 extern int money;
 extern char send_buffer[32];
 extern int send_place_to_write;
+extern int send_place_to_read;
 char water_string[] = "{W}";
 extern void configure_interrupt(void);
 /**********************************************************************
@@ -20,13 +21,12 @@ TASK(WATERTASK)
 	while(1) {
         WaitEvent(WATER_EVENT); //WATER EVENT FIRED
         ClearEvent(WATER_EVENT);
-        WaitEvent(WATER_EVENT); //WATER EVENT FIRED
-        ClearEvent(WATER_EVENT);
         money-=30;
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = water_string[i];
         }
         TXSTA1bits.TXEN = 1; //enable transmission.
+        while(send_place_to_write != send_place_to_read);
 	}
 	TerminateTask();
 }

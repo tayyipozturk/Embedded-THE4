@@ -6,6 +6,7 @@
 extern int money;
 extern char send_buffer[32];
 extern int send_place_to_write;
+extern int send_place_to_read;
 char play_string[] = "{P}";
 extern void configure_interrupt(void);
 
@@ -21,13 +22,12 @@ TASK(PLAYTASK)
 	while(1) {
         WaitEvent(PLAY_EVENT); //PLAY EVENT FIRED
         ClearEvent(PLAY_EVENT);
-        WaitEvent(PLAY_EVENT); //PLAY EVENT FIRED
-        ClearEvent(PLAY_EVENT);
         money-=150;
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = play_string[i];
         }
         TXSTA1bits.TXEN = 1; //enable transmission.
+        while(send_place_to_write != send_place_to_read);
 	}
 	TerminateTask();
 }

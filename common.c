@@ -89,7 +89,6 @@ void check_data()
             unsigned char upperMoney;
             unsigned char lowerMoney;
             int earned_money;
-            recieve_place_to_read++;
             upperMoney = recieve_buffer[recieve_place_to_read++%32];
             lowerMoney = recieve_buffer[recieve_place_to_read++%32];
             recieve_place_to_read++; //pass the "}"
@@ -103,28 +102,19 @@ void check_data()
             happy = recieve_buffer[recieve_place_to_read++%32];
             thirst = recieve_buffer[recieve_place_to_read++%32];
             if(hunger <= 40) {
-                //TXSTA1bits.TXEN = 0;
                 if(money >= 80){
-                SetEvent(FEEDTASK_ID, FEED_EVENT);
-                //money -= 80;
+                    SetEvent(FEEDTASK_ID, FEED_EVENT);
                 }
-                //TXSTA1bits.TXEN = 1;
             }
             if(thirst <= 70) {
-                //TXSTA1bits.TXEN = 0;
                 if(money >= 30){
-                SetEvent(WATERTASK_ID, WATER_EVENT);
-                //money -= 30;
+                    SetEvent(WATERTASK_ID, WATER_EVENT);
                 }
-                //TXSTA1bits.TXEN = 1;
             }
             if(happy <= 20) {
-                //TXSTA1bits.TXEN = 0;
                 if(money >= 150){
-                SetEvent(PLAYTASK_ID, PLAY_EVENT);
-                //money -= 150;
+                    SetEvent(PLAYTASK_ID, PLAY_EVENT);
                 }
-                //TXSTA1bits.TXEN = 1;
             }
         }
     }
