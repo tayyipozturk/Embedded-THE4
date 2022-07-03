@@ -3,8 +3,12 @@
 /**********************************************************************
  * ----------------------- GLOBAL VARIABLES ---------------------------
  **********************************************************************/
+extern int money;
 extern char send_buffer[32];
 extern int send_place_to_write;
+extern int send_place_to_read;
+extern int feed_flag;
+extern int hunger;
 char feed_string[] = "{F}";
 extern void configure_interrupt(void);
 /**********************************************************************
@@ -19,12 +23,16 @@ TASK(FEEDTASK)
 	while(1) {
         WaitEvent(FEED_EVENT); //FEED EVENT FIRED
         ClearEvent(FEED_EVENT);
-        //WaitEvent(FEED_EVENT); //FEED EVENT FIRED
-        //ClearEvent(FEED_EVENT);
+        money-=80;
+        
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = feed_string[i];
         }
+        feed_flag = 0;
+        
         TXSTA1bits.TXEN = 1; //enable transmission.
+        //while(send_place_to_write != send_place_to_read);
+        
 	}
 	TerminateTask();
 }

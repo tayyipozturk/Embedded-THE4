@@ -23,6 +23,7 @@
 #define PLAY_EVENT        0x04
 #define SEND_EVENT        0x05
 #define RECEIVE_EVENT     0x06
+#define HASH_EVENT        0x07
 
 /***********************************************************************
  * ----------------------------- Task ID -------------------------------
@@ -37,17 +38,19 @@
 #define PLAYTASK_ID          4
 #define SENDTASK_ID          5
 #define RECEIVETASK_ID       6
+#define HASHTASK_ID          7
 
 /* Priorities of the tasks */
-#define STATUSCHECK_PRIO    1
-#define FEEDTASK_PRIO       7
-#define WATERTASK_PRIO      8
+#define STATUSCHECK_PRIO    2
+#define FEEDTASK_PRIO       8
+#define WATERTASK_PRIO      7
 #define PLAYTASK_PRIO       9
-#define SENDTASK_PRIO       3 
-#define RECEIVETASK_PRIO    2
+#define SENDTASK_PRIO       4 
+#define RECEIVETASK_PRIO    3
+#define HASHTASK_PRIO       10
 
-#define STATUSALARM          1
-#define SENDALARM            2   
+#define STATUSALARM          0
+#define SENDALARM            1   
 
 
 
