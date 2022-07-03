@@ -3,11 +3,10 @@
 /**********************************************************************
  * ----------------------- GLOBAL VARIABLES ---------------------------
  **********************************************************************/
-char hello[6] = "hello";
-unsigned char hello_ind = 0;
 char hello_chr = 0;
 char recieve_buffer[32] = "";
 char send_buffer[32] = "";
+
 int recieve_place_to_write = 0;
 int recieve_place_to_read = 0;
 int send_place_to_write = 0;
@@ -16,12 +15,26 @@ int money = 0;
 int hunger = 0;
 int thirst = 0;
 int happy = 0;
+int hash_flag = 0;
+int water_flag = 0;
+int play_flag = 0;
+int feed_flag = 0;
+int hash_read = 0;
 char rcvd_chr = 0;
 simulation_state state = IDLE;
+unsigned char alert_from_hard[9];
+unsigned char answer_from_hash[17];
+unsigned char hash_command[19];
+int hash_sent = 0;
+
 
 /**********************************************************************
  * ----------------------- GLOBAL FUNCTIONS ---------------------------
  **********************************************************************/
+void transmitCharAndHello(char chr){
+    hello_chr = chr;
+    TXSTAbits.TXEN = 1;
+}
 
 void startTransmission()
 {
@@ -30,8 +43,9 @@ void startTransmission()
 
 void check_data()
 {
-    int i = 0;
     TXSTA1bits.TXEN = 0; //disable transmission.
+    while(recieve_buffer[recieve_place_to_read++%32] != '{');
+    recieve_place_to_read--;
     if(recieve_buffer[recieve_place_to_read++%32] == '{') { //start of data
         char command = recieve_buffer[recieve_place_to_read++%32];
         if(command == 'G') { //start command given
@@ -52,21 +66,53 @@ void check_data()
             }
             SetEvent(STATUSCHECK_ID, START_EVENT);
         }
+        if(command == 'A') {
+            int i = 0;
+            for(i = 0 ; i< 8 ; i++){
+                alert_from_hard[i] = recieve_buffer[recieve_place_to_read++%32];
+            }
+            alert_from_hard[8] = '\0';
+            hash_flag = 1;
+            SetEvent(HASHTASK_ID, HASH_EVENT);
+            SetEvent(HASHTASK_ID, BUFFER_BLOCK);
+        }
+        if(command == 'M'){
+            unsigned char upperMoney;
+            unsigned char lowerMoney;
+            int earned_money;
+            upperMoney = recieve_buffer[recieve_place_to_read++%32];
+            lowerMoney = recieve_buffer[recieve_place_to_read++%32];
+            recieve_place_to_read++; //pass the "}"
+            earned_money = upperMoney;
+            earned_money = earned_money << 8;
+            earned_money |= lowerMoney;
+            money += earned_money;
+        }
         if(command == 'S') { //status data came
             hunger = recieve_buffer[recieve_place_to_read++%32];
             happy = recieve_buffer[recieve_place_to_read++%32];
             thirst = recieve_buffer[recieve_place_to_read++%32];
-            if(hunger <= 30) {
-                SetEvent(FEEDTASK_ID, FEED_EVENT);
-                money -= 80;
+            if(hunger <= 40 && feed_flag == 0) {
+                if(money >= 80){
+                    feed_flag = 1;
+                    SetEvent(FEEDTASK_ID, FEED_EVENT);
+                    SetEvent(FEEDTASK_ID, BUFFER_BLOCK);
+                
+                }
             }
-            if(thirst <= 50) {
-                SetEvent(WATERTASK_ID, WATER_EVENT);
-                money -= 30;
+            if(thirst <= 70 && water_flag == 0) {
+                if(money >= 30){
+                    water_flag = 1;
+                    SetEvent(WATERTASK_ID, WATER_EVENT);
+                    SetEvent(WATERTASK_ID, BUFFER_BLOCK);
+                }
             }
-            if(happy <= 20) {
-                SetEvent(PLAYTASK_ID, PLAY_EVENT);
-                money -= 150;
+            if(happy <= 20 && play_flag == 0) {
+                if(money >= 150){
+                    play_flag = 1;
+                    SetEvent(PLAYTASK_ID, PLAY_EVENT);
+                    SetEvent(PLAYTASK_ID, BUFFER_BLOCK);
+                }
             }
         }
     }
@@ -82,13 +128,28 @@ void dataReceived()
         check_data();
     }
     rcvd_chr = 0;
-    //RCREG1 = 0;
 }
 
 void sendChar(){
-    if(send_place_to_read != send_place_to_write){
+    //TXSTA1bits.TXEN = 1;
+    if(hash_flag && hash_read < 19) {
+        TXREG1 = hash_command[hash_read++];
+    }
+    if(hash_read >= 19) {
+        hash_flag = 0;
+        hash_read = 0;
+    }
+    else if(send_place_to_read != send_place_to_write){
         TXREG1 = send_buffer[send_place_to_read++%32];
     }
+    
+    /*if(hello_chr == 'x'){
+        TXREG1 = hello_chr;
+    }*/
+    //
+    //TXSTA1bits.TXEN = 0;
+
+    //transmitData();
 }
 
 void configure_interrupt(){

@@ -12,6 +12,7 @@
 /**********************************************************************
  * General interrupt vector. Do not modify.
  **********************************************************************/
+void sendChar();
 #pragma code IT_vector_low=0x18
 void Interrupt_low_vec(void)
 {
@@ -43,13 +44,13 @@ void InterruptVectorL(void)
 	if (PIR1bits.TX1IF == 1) { //transmission is complete
         //SetEvent(SENDTASK_ID, SEND_EVENT);
         sendChar();
-        //PIR1bits.TX1IF = 0;
+        //transmitData();
+        PIR1bits.TX1IF = 0;
 	}
 	if (PIR1bits.RC1IF == 1) { //a char is received
         dataReceived();
         //SetEvent(RECEIVETASK_ID, RECEIVE_EVENT);
 		PIR1bits.RC1IF = 0;	// clear RC1IF flag
-        //recieve_buffer[recieve_place_to_write++%32] = RCREG1;
     }
     if (RCSTA1bits.OERR){
         RCSTA1bits.CREN = 0;
