@@ -4,8 +4,10 @@
  * ----------------------- GLOBAL VARIABLES ---------------------------
  **********************************************************************/
 extern char send_buffer[32];
+extern int hash_flag;
 extern int send_place_to_write;
 char status_check_string[] = "{C}";
+extern int end_flag;
 extern void configure_interrupt(void);
 /**********************************************************************
  * ----------------------- LOCAL FUNCTIONS ----------------------------
@@ -19,11 +21,18 @@ TASK(STATUSCHECK)
     ClearEvent(START_EVENT);
 	SetRelAlarm(STATUSALARM, 100, 50); //check status every 50ms
 	while(1) {
+        if(end_flag) {
+            TerminateTask();
+        }
+        /*if(hash_flag == 1) {
+            ChainTask(HASHTASK_ID);
+        }*/
         WaitEvent(ALARM_EVENT);
         ClearEvent(ALARM_EVENT);
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = status_check_string[i];
         }
+        TXSTAbits.TXEN = 1;
     }
 	TerminateTask();
 }
