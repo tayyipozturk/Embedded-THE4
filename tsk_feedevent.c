@@ -29,19 +29,19 @@ TASK(FEEDTASK)
         WaitEvent(FEED_EVENT); //FEED EVENT FIRED
         ClearEvent(FEED_EVENT);
         SuspendAllInterrupts();
-        if(any_task == 0) {
+        /*if(feed_flag == 0) {
             EnableAllInterrupts();
             continue;
-        }
+        }*/
         money-=80;
         
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = feed_string[i];
         }
         //feed_flag = 0;
+        EnableAllInterrupts();
         WaitEvent(BUFFER_BLOCK);
         ClearEvent(BUFFER_BLOCK);
-        EnableAllInterrupts();
         TXSTA1bits.TXEN = 1; //enable transmission.
         while(send_place_to_write > send_place_to_read);
         SuspendAllInterrupts();

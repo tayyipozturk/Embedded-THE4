@@ -19,6 +19,8 @@ TASK(STATUSCHECK)
     PIE1bits.RC1IE = 1;	// enable USART receive interrupt
     WaitEvent(START_EVENT); //enable status check, when start even fired
     ClearEvent(START_EVENT);
+    //WaitEvent(BUFFER_BLOCK);
+    //ClearEvent(BUFFER_BLOCK);
 	SetRelAlarm(STATUSALARM, 100, 50); //check status every 50ms
 	while(1) {
         if(end_flag) {
