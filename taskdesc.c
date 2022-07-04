@@ -1,5 +1,7 @@
 #include "common.h"
+#include "LCD.h"
 
+extern const char string_pool[2][16];
 /**********************************************************************
  * --------------------- COUNTER & ALARM DEFINITION -------------------
  **********************************************************************/
@@ -89,22 +91,24 @@ DeclareTask(WATERTASK);
 DeclareTask(PLAYTASK);
 DeclareTask(SENDTASK);
 DeclareTask(RECEIVETASK);
+DeclareTask(HASHTASK);
+//DeclareTask(LCDTASK);
 
 // to avoid any C18 map error : regroup the stacks into blocks
 // of 256 bytes (except the last one).
 #pragma		udata      STACK_A   
-volatile unsigned char stack0[DEFAULT_STACK_SIZE];
+volatile unsigned char stack0[256];
 #pragma		udata      STACK_B
-volatile unsigned char stack1[DEFAULT_STACK_SIZE];
+volatile unsigned char stack1[256];
 #pragma		udata      STACK_C
-volatile unsigned char stack2[DEFAULT_STACK_SIZE];
+volatile unsigned char stack2[256];
 #pragma		udata      STACK_D
-volatile unsigned char stack3[DEFAULT_STACK_SIZE];
+volatile unsigned char stack3[256];
 #pragma		udata      STACK_E
-volatile unsigned char stack4[128];
-#pragma		udata      STACK_F
-volatile unsigned char stack5[128];
-#pragma		udata
+volatile unsigned char stack4[256];
+//#pragma		udata      STACK_F
+//volatile unsigned char stack5[256];
+#pragma     udata
 /**********************************************************************
  * ---------------------- TASK DESCRIPTOR SECTION ---------------------
  **********************************************************************/
@@ -162,25 +166,25 @@ rom_desc_tsk rom_desc_task3 = {
  * -----------------------------  task 4 ------------------------------
  **********************************************************************/
 rom_desc_tsk rom_desc_task4 = {
-	SENDTASK_PRIO,                       /* prioinit from 0 to 15       */
+	HASHTASK_PRIO,                       /* prioinit from 0 to 15       */
 	stack4,                           /* stack address (16 bits)     */
-	SENDTASK,                            /* start address (16 bits)     */
+	HASHTASK,                            /* start address (16 bits)     */
 	READY,                            /* state at init phase         */
-	SENDTASK_ID,                         /* id_tsk from 0 to 15         */
+	HASHTASK_ID,                         /* id_tsk from 0 to 15         */
 	sizeof(stack4)                    /* stack size    (16 bits)     */
 };
 
 /**********************************************************************
- * -----------------------------  task 5 ------------------------------
+ * -------------------------------  LCD  ------------------------------
  **********************************************************************/
-rom_desc_tsk rom_desc_task5 = {
-	RECEIVETASK_PRIO,                       /* prioinit from 0 to 15       */
-	stack5,                           /* stack address (16 bits)     */
-	RECEIVETASK,                            /* start address (16 bits)     */
-	READY,                            /* state at init phase         */
-	RECEIVETASK_ID,                         /* id_tsk from 0 to 15         */
-	sizeof(stack5)                    /* stack size    (16 bits)     */
-};
+//rom_desc_tsk rom_desc_task5 = {
+//    LCDTASK_PRIO,                       /* prioinit from 0 to 15       */
+//    stack5,                      /* stack address (16 bits)     */
+//    LCDTASK,                            /* start address (16 bits)     */
+//    READY,                          /* state at init phase         */
+//    LCDTASK_ID,                         /* id_tsk from 0 to 15         */
+//    sizeof(stack5)               /* ctx address   (16 bits)     */
+//};
 
 
 /**********************************************************************
