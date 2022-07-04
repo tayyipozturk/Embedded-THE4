@@ -26,6 +26,9 @@
 #define HASH_EVENT        0x07
 #define BUFFER_BLOCK      0x08
 
+#define LCD_EVENT         0x09
+#define LCD_ALARM         0x0A
+
 /***********************************************************************
  * ----------------------------- Task ID -------------------------------
  **********************************************************************/
@@ -40,15 +43,17 @@
 #define SENDTASK_ID          5
 #define RECEIVETASK_ID       6
 #define HASHTASK_ID          7
+#define LCDTASK_ID           8
 
 /* Priorities of the tasks */
 #define STATUSCHECK_PRIO    2
-#define FEEDTASK_PRIO       8
-#define WATERTASK_PRIO      7
-#define PLAYTASK_PRIO       9
+#define FEEDTASK_PRIO       7
+#define WATERTASK_PRIO      6
+#define PLAYTASK_PRIO       8
 #define SENDTASK_PRIO       4 
 #define RECEIVETASK_PRIO    3
 #define HASHTASK_PRIO       10
+#define LCDTASK_PRIO        5
 
 #define STATUSALARM          0
 #define SENDALARM            1   

@@ -5,18 +5,10 @@
 /**********************************************************************
  * ----------------------- GLOBAL VARIABLES ---------------------------
  **********************************************************************/
-extern char send_buffer[32];
 extern unsigned char alert_from_hard[9];
-extern int send_place_to_write;
-extern int send_place_to_read;
 extern unsigned char answer_from_hash[17];
 extern unsigned char hash_command[19];
 extern int hash_flag;
-extern int hash_read;
-extern int water_flag;
-extern int play_flag;
-extern int feed_flag;
-extern int any_task;
 
 /**********************************************************************
  * ----------------------- LOCAL FUNCTIONS ----------------------------
@@ -62,12 +54,13 @@ TASK(HASHTASK)
 {
     int j;
     PIE1bits.RC1IE = 1;	// enable USART receive interrupt
+    EnableAllInterrupts();
 	while(1) {
         WaitEvent(HASH_EVENT); //enable status check, when start even fired
         ClearEvent(HASH_EVENT);
         //transmitCharAndHello('x');
         compute_hash(alert_from_hard, answer_from_hash);
-        
+        //SuspendAllInterrupts();
         hash_command[0] = '{';
         hash_command[1] = 'H';
         
@@ -75,13 +68,17 @@ TASK(HASHTASK)
             hash_command[j+2] = answer_from_hash[j];
         }
         hash_command[18] = '}';
-        
+        //EnableAllInterrupts();
         TXSTA1bits.TXEN = 1; //enable transmission.
         while(hash_flag);
+        hash_flag = 0;
+        j = 0;
         //ChainTask(STATUSCHECK_ID);
         
     }
+    
 	TerminateTask();
+    j = 0;
 }
 
 

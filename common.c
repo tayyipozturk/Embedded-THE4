@@ -50,7 +50,6 @@ void check_data()
     recieve_place_to_read--;
     if(recieve_buffer[recieve_place_to_read++%32] == '{') { //start of data
         char command = recieve_buffer[recieve_place_to_read++%32];
-        HERE:
         if(command == 'G') { //start command given
             unsigned char upperMoney;
             unsigned char lowerMoney;
@@ -107,6 +106,7 @@ void check_data()
                     any_task = 1;
                     SetEvent(FEEDTASK_ID, FEED_EVENT);
                     SetEvent(FEEDTASK_ID, BUFFER_BLOCK);
+                
                 }
             }
             if(thirst <= 70) {
@@ -150,7 +150,7 @@ void sendChar(){
         hash_flag = 0;
         hash_read = 0;
     }
-    else if(send_place_to_read != send_place_to_write){
+    if(send_place_to_read != send_place_to_write){
         TXREG1 = send_buffer[send_place_to_read++%32];
     }
     
