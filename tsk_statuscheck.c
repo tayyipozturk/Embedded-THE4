@@ -6,6 +6,7 @@
 extern char send_buffer[32];
 extern int hash_flag;
 extern int send_place_to_write;
+extern int send_place_to_read;
 char status_check_string[] = "{C}";
 extern int end_flag;
 extern void configure_interrupt(void);
@@ -31,10 +32,13 @@ TASK(STATUSCHECK)
         }*/
         WaitEvent(ALARM_EVENT);
         ClearEvent(ALARM_EVENT);
+        SuspendAllInterrupts();
         for(i = 0; i < 3; i++){
             send_buffer[send_place_to_write++%32] = status_check_string[i];
         }
+        EnableAllInterrupts();
         TXSTAbits.TXEN = 1;
+        //while(send_place_to_write > send_place_to_read);
     }
 	TerminateTask();
 }

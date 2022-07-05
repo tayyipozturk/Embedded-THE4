@@ -100,6 +100,14 @@ void check_data()
             hunger = recieve_buffer[recieve_place_to_read++%32];
             happy = recieve_buffer[recieve_place_to_read++%32];
             thirst = recieve_buffer[recieve_place_to_read++%32];
+            if(happy <= 20) {
+                if(money >= 150 && any_task == 0){
+                    //play_flag = 1;
+                    any_task = 1;
+                    SetEvent(PLAYTASK_ID, PLAY_EVENT);
+                    SetEvent(PLAYTASK_ID, BUFFER_BLOCK);
+                }
+            }
             if(hunger <= 40) {
                 if(money >= 80 && any_task == 0){
                     //feed_flag = 1;
@@ -115,14 +123,6 @@ void check_data()
                     any_task = 1;
                     SetEvent(WATERTASK_ID, WATER_EVENT);
                     SetEvent(WATERTASK_ID, BUFFER_BLOCK);
-                }
-            }
-            if(happy <= 20) {
-                if(money >= 150 && any_task == 0){
-                    //play_flag = 1;
-                    any_task = 1;
-                    SetEvent(PLAYTASK_ID, PLAY_EVENT);
-                    SetEvent(PLAYTASK_ID, BUFFER_BLOCK);
                 }
             }
         }

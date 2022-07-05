@@ -27,7 +27,7 @@ TASK(PLAYTASK)
         }
         WaitEvent(PLAY_EVENT); //PLAY EVENT FIRED
         ClearEvent(PLAY_EVENT);
-        //SuspendAllInterrupts();
+        SuspendAllInterrupts();
         /*if(play_flag == 0) {
             EnableAllInterrupts();
             continue;
@@ -38,7 +38,7 @@ TASK(PLAYTASK)
             send_buffer[send_place_to_write++%32] = play_string[i];
         }
         //play_flag = 0;
-        //EnableAllInterrupts();
+        EnableAllInterrupts();
         WaitEvent(BUFFER_BLOCK);
         ClearEvent(BUFFER_BLOCK);
         TXSTA1bits.TXEN = 1; //enable transmission.

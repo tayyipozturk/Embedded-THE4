@@ -46,7 +46,7 @@
 #define LCDTASK_ID           8
 
 /* Priorities of the tasks */
-#define STATUSCHECK_PRIO    2
+#define STATUSCHECK_PRIO    9
 #define FEEDTASK_PRIO       7
 #define WATERTASK_PRIO      6
 #define PLAYTASK_PRIO       8

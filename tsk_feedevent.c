@@ -27,7 +27,7 @@ TASK(FEEDTASK)
         }
         WaitEvent(FEED_EVENT); //FEED EVENT FIRED
         ClearEvent(FEED_EVENT);
-        //SuspendAllInterrupts();
+        SuspendAllInterrupts();
         /*if(feed_flag == 0) {
             EnableAllInterrupts();
             continue;
@@ -38,7 +38,7 @@ TASK(FEEDTASK)
             send_buffer[send_place_to_write++%32] = feed_string[i];
         }
         //feed_flag = 0;
-        //EnableAllInterrupts();
+        EnableAllInterrupts();
         WaitEvent(BUFFER_BLOCK);
         ClearEvent(BUFFER_BLOCK);
         TXSTA1bits.TXEN = 1; //enable transmission.

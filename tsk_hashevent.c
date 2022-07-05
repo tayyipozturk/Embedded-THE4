@@ -60,7 +60,7 @@ TASK(HASHTASK)
         ClearEvent(HASH_EVENT);
         //transmitCharAndHello('x');
         compute_hash(alert_from_hard, answer_from_hash);
-        //SuspendAllInterrupts();
+        SuspendAllInterrupts();
         hash_command[0] = '{';
         hash_command[1] = 'H';
         
@@ -68,10 +68,12 @@ TASK(HASHTASK)
             hash_command[j+2] = answer_from_hash[j];
         }
         hash_command[18] = '}';
-        //EnableAllInterrupts();
+        EnableAllInterrupts();
         TXSTA1bits.TXEN = 1; //enable transmission.
         while(hash_flag);
+        SuspendAllInterrupts();
         hash_flag = 0;
+        EnableAllInterrupts();
         j = 0;
         //ChainTask(STATUSCHECK_ID);
         
