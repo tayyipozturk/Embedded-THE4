@@ -27,7 +27,7 @@ TASK(PLAYTASK)
         }
         WaitEvent(PLAY_EVENT); //PLAY EVENT FIRED
         ClearEvent(PLAY_EVENT);
-        SuspendAllInterrupts();
+        //SuspendAllInterrupts();
         if(any_task == 0) {
             EnableAllInterrupts();
             continue;
@@ -42,13 +42,14 @@ TASK(PLAYTASK)
         //play_flag = 0;
         WaitEvent(BUFFER_BLOCK);
         ClearEvent(BUFFER_BLOCK);
-        EnableAllInterrupts();
+        //EnableAllInterrupts();
         
         TXSTA1bits.TXEN = 1; //enable transmission.
         while(send_place_to_write > send_place_to_read);
-        SuspendAllInterrupts();
+        //SuspendAllInterrupts();
         any_task = 0;
-        EnableAllInterrupts();
+        play_flag = 0;
+        //EnableAllInterrupts();
 	}
 	TerminateTask();
 }

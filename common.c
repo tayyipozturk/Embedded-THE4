@@ -15,6 +15,9 @@ int money = 0;
 int hunger = 0;
 int thirst = 0;
 int happy = 0;
+int updatedHunger = 100;
+int updatedThirst = 100;
+int updatedHappy = 100;
 int hash_flag = 0;
 int water_flag = 0;
 int play_flag = 0;
@@ -101,25 +104,37 @@ void check_data()
             hunger = recieve_buffer[recieve_place_to_read++%32];
             happy = recieve_buffer[recieve_place_to_read++%32];
             thirst = recieve_buffer[recieve_place_to_read++%32];
+            if(!feed_flag){
+                updatedHunger = hunger;
+            }
+            if(!water_flag){
+                updatedThirst = thirst;
+            }
+            if(!play_flag){
+                updatedHappy = happy;
+            }
             if(hunger <= 40) {
-                if(money >= 80 && any_task == 0){
-                    //feed_flag = 1;
+                if(money >= 80 && any_task == 0 && updatedHunger == hunger){
+                    feed_flag = 1;
+                    updatedHunger = hunger+60;
                     any_task = 1;
                     SetEvent(FEEDTASK_ID, FEED_EVENT);
                     SetEvent(FEEDTASK_ID, BUFFER_BLOCK);
                 }
             }
             if(thirst <= 70) {
-                if(money >= 30 && any_task == 0){
-                    //water_flag = 1;
+                if(money >= 30 && any_task == 0 && updatedThirst == thirst){
+                    water_flag = 1;
+                    updatedThirst = thirst+30;
                     any_task = 1;
                     SetEvent(WATERTASK_ID, WATER_EVENT);
                     SetEvent(WATERTASK_ID, BUFFER_BLOCK);
                 }
             }
             if(happy <= 20) {
-                if(money >= 150 && any_task == 0){
-                    //play_flag = 1;
+                if(money >= 150 && any_task == 0  && updatedHappy == happy){
+                    play_flag = 1;
+                    updatedHappy = happy+80;
                     any_task = 1;
                     SetEvent(PLAYTASK_ID, PLAY_EVENT);
                     SetEvent(PLAYTASK_ID, BUFFER_BLOCK);

@@ -94,16 +94,16 @@ DeclareTask(HASHTASK);
 // to avoid any C18 map error : regroup the stacks into blocks
 // of 256 bytes (except the last one).
 #pragma		udata      STACK_A   
-volatile unsigned char stack0[128];
+volatile unsigned char stack0[192];
 #pragma		udata      STACK_B
-volatile unsigned char stack1[128];
+volatile unsigned char stack1[192];
 #pragma		udata      STACK_C
-volatile unsigned char stack2[128];
+volatile unsigned char stack2[192];
 #pragma		udata      STACK_D
-volatile unsigned char stack3[128];
+volatile unsigned char stack3[192];
 #pragma		udata      STACK_E
 volatile unsigned char stack4[512];
-#pragma		udata      STACK_F
+#pragma		udata
 /**********************************************************************
  * ---------------------- TASK DESCRIPTOR SECTION ---------------------
  **********************************************************************/

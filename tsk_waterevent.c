@@ -27,7 +27,7 @@ TASK(WATERTASK)
         }
         WaitEvent(WATER_EVENT); //WATER EVENT FIRED
         ClearEvent(WATER_EVENT);
-        SuspendAllInterrupts();
+        //SuspendAllInterrupts();
         if(any_task == 0) {
             EnableAllInterrupts();
             continue;
@@ -42,12 +42,13 @@ TASK(WATERTASK)
         //water_flag = 0;
         WaitEvent(BUFFER_BLOCK);
         ClearEvent(BUFFER_BLOCK);
-        EnableAllInterrupts();
+        //EnableAllInterrupts();
         TXSTA1bits.TXEN = 1; //enable transmission.
         while(send_place_to_write > send_place_to_read);
-        SuspendAllInterrupts();
+        //SuspendAllInterrupts();
         any_task = 0;
-        EnableAllInterrupts();
+        water_flag = 0;
+        //EnableAllInterrupts();
 	}
 	TerminateTask();
 }

@@ -65,6 +65,7 @@ TASK(HASHTASK)
 	while(1) {
         WaitEvent(HASH_EVENT); //enable status check, when start even fired
         ClearEvent(HASH_EVENT);
+        EnableAllInterrupts();
         //transmitCharAndHello('x');
         compute_hash(alert_from_hard, answer_from_hash);
         
