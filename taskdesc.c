@@ -1,3 +1,10 @@
+/*          Group 18
+ * Authors: Ayberk Gokmen - 2380442
+ *          Muhammed Tayyip Ozturk - 2380806
+ *          Nilufer Tak - 2310506
+ *          Muhammed Yakup Demirtas - 2380285
+ *
+ */
 #include "common.h"
 
 /**********************************************************************
@@ -52,7 +59,7 @@ AlarmObject Alarm_list[] =
      0,                                    /* AlarmValue              */
      0,                                    /* Cycle                   */
      &Counter_kernel,                      /* ptrCounter              */
-     SENDTASK_ID,                       /* TaskID2Activate         */
+     SENDTASK_ID,                          /* TaskID2Activate         */
      ALARM_EVENT,                          /* EventToPost             */
      0                                     /* CallBack                */
    }
@@ -87,24 +94,27 @@ DeclareTask(STATUSCHECK);
 DeclareTask(FEEDTASK);
 DeclareTask(WATERTASK);
 DeclareTask(PLAYTASK);
-DeclareTask(SENDTASK);
-DeclareTask(RECEIVETASK);
+DeclareTask(HASHTASK);
+//DeclareTask(LCD);
+//DeclareTask(TASK0);
 
 // to avoid any C18 map error : regroup the stacks into blocks
 // of 256 bytes (except the last one).
 #pragma		udata      STACK_A   
-volatile unsigned char stack0[DEFAULT_STACK_SIZE];
+volatile unsigned char stack0[192];         //STATUSCHECK STACK
 #pragma		udata      STACK_B
-volatile unsigned char stack1[DEFAULT_STACK_SIZE];
+volatile unsigned char stack1[192];         //FEEDTASK STACK
 #pragma		udata      STACK_C
-volatile unsigned char stack2[DEFAULT_STACK_SIZE];
+volatile unsigned char stack2[192];         //WATERTASK STACK
 #pragma		udata      STACK_D
-volatile unsigned char stack3[DEFAULT_STACK_SIZE];
+volatile unsigned char stack3[192];         //PLAYTASK STACK
 #pragma		udata      STACK_E
-volatile unsigned char stack4[128];
+volatile unsigned char stack4[256];         //HASHTASK STACK
 #pragma		udata      STACK_F
-volatile unsigned char stack5[128];
-#pragma		udata
+//volatile unsigned char stack5[128];         //LCD STACK
+//#pragma		udata      STACK_G
+//volatile unsigned char stack6[128];         //LCD WRITE STACK
+//#pragma		udata
 /**********************************************************************
  * ---------------------- TASK DESCRIPTOR SECTION ---------------------
  **********************************************************************/
@@ -162,25 +172,37 @@ rom_desc_tsk rom_desc_task3 = {
  * -----------------------------  task 4 ------------------------------
  **********************************************************************/
 rom_desc_tsk rom_desc_task4 = {
-	SENDTASK_PRIO,                       /* prioinit from 0 to 15       */
+	HASHTASK_PRIO,                       /* prioinit from 0 to 15       */
 	stack4,                           /* stack address (16 bits)     */
-	SENDTASK,                            /* start address (16 bits)     */
+	HASHTASK,                            /* start address (16 bits)     */
 	READY,                            /* state at init phase         */
-	SENDTASK_ID,                         /* id_tsk from 0 to 15         */
+	HASHTASK_ID,                         /* id_tsk from 0 to 15         */
 	sizeof(stack4)                    /* stack size    (16 bits)     */
 };
 
 /**********************************************************************
  * -----------------------------  task 5 ------------------------------
  **********************************************************************/
-rom_desc_tsk rom_desc_task5 = {
-	RECEIVETASK_PRIO,                       /* prioinit from 0 to 15       */
-	stack5,                           /* stack address (16 bits)     */
-	RECEIVETASK,                            /* start address (16 bits)     */
-	READY,                            /* state at init phase         */
-	RECEIVETASK_ID,                         /* id_tsk from 0 to 15         */
-	sizeof(stack5)                    /* stack size    (16 bits)     */
-};
+//rom_desc_tsk rom_desc_task5 = {
+//	LCDTASK_PRIO,                       /* prioinit from 0 to 15       */
+//	stack5,                           /* stack address (16 bits)     */
+//	LCD,                            /* start address (16 bits)     */
+//	READY,                            /* state at init phase         */
+//	LCD_ID,                         /* id_tsk from 0 to 15         */
+//	sizeof(stack5)                    /* stack size    (16 bits)     */
+//};
+
+/**********************************************************************
+ * -----------------------------  task 6 ------------------------------
+ **********************************************************************/
+//rom_desc_tsk rom_desc_task6 = {
+//	TASK0_PRIO,                       /* prioinit from 0 to 15       */
+//	stack6,                           /* stack address (16 bits)     */
+//	TASK0,                            /* start address (16 bits)     */
+//	READY,                            /* state at init phase         */
+//	TASK0_ID,                         /* id_tsk from 0 to 15         */
+//	sizeof(stack6)                    /* stack size    (16 bits)     */
+//};
 
 
 /**********************************************************************

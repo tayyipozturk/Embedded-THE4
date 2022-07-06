@@ -1,5 +1,13 @@
+/*          Group 18
+ * Authors: Ayberk Gokmen - 2380442
+ *          Muhammed Tayyip Ozturk - 2380806
+ *          Nilufer Tak - 2310506
+ *          Muhammed Yakup Demirtas - 2380285
+ *
+ */
 #include "common.h"
 
+unsigned char lcdToggle = 0, portBpressed = 0;      //Indicators of led and condition of RB1 either released or pressed at the moment
 /**********************************************************************
  * Function you want to call when an IT occurs.
  **********************************************************************/
@@ -12,6 +20,7 @@
 /**********************************************************************
  * General interrupt vector. Do not modify.
  **********************************************************************/
+void sendChar();
 #pragma code IT_vector_low=0x18
 void Interrupt_low_vec(void)
 {
@@ -40,20 +49,26 @@ void InterruptVectorL(void)
 	if (INTCONbits.TMR0IF == 1)
 		AddOneTick();
 	/* Here are the other interrupts you would desire to manage */
-	if (PIR1bits.TX1IF == 1) { //transmission is complete
-        //SetEvent(SENDTASK_ID, SEND_EVENT);
+	if (PIR1bits.TX1IF == 1) {                          //Transmission is complete
         sendChar();
-        //PIR1bits.TX1IF = 0;
+        PIR1bits.TX1IF = 0;
 	}
-	if (PIR1bits.RC1IF == 1) { //a char is received
+	if (PIR1bits.RC1IF == 1) {                          //A char is received
         dataReceived();
-        //SetEvent(RECEIVETASK_ID, RECEIVE_EVENT);
-		PIR1bits.RC1IF = 0;	// clear RC1IF flag
-        //recieve_buffer[recieve_place_to_write++%32] = RCREG1;
+		PIR1bits.RC1IF = 0;                             //Clear RC1IF flag
     }
     if (RCSTA1bits.OERR){
         RCSTA1bits.CREN = 0;
         RCSTA1bits.CREN = 1;
+    }
+    if (INTCONbits.RBIF == 1) { 
+        if(PORTBbits.RB1)                               //Check if RB1 is pressed
+            portBpressed = 1 ;
+        else if (!PORTBbits.RB1 && portBpressed) {      //Check if RB1 is released
+            portBpressed = 0 ;
+            lcdToggle ^= 1;                             //Reverse lcdToggle indicator
+        }
+		INTCONbits.RBIF = 0 ;                           // RB interrupt flag should be cleared 
     }
 	LeaveISR();
 }

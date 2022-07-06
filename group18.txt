@@ -1,0 +1,7 @@
+/*          Group 18
+ * Authors: Ayberk Gokmen - 2380442
+ *          Muhammed Tayyip Ozturk - 2380806
+ *          Nilufer Tak - 2310506
+ *          Muhammed Yakup Demirtas - 2380285
+ *
+ */

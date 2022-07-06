@@ -1,6 +1,14 @@
+/*          Group 18
+ * Authors: Ayberk Gokmen - 2380442
+ *          Muhammed Tayyip Ozturk - 2380806
+ *          Nilufer Tak - 2310506
+ *          Muhammed Yakup Demirtas - 2380285
+ *
+ */
 #pragma config OSC = HSPLL, FCMEN = OFF, IESO = OFF, PWRT = OFF, BOREN = OFF, WDT = OFF, MCLRE = ON, LPT1OSC = OFF, LVP = OFF, XINST = OFF, DEBUG = OFF
 
 #include "common.h"
+//#include "LCD.h"
 
 /**********************************************************************
  * Definition dedicated to the local functions.
